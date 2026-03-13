@@ -794,6 +794,9 @@ async def take_turn(req: TurnRequest):
 
     journal_content = read_journal_summary(max_turns=10)
     
+    race_key = race.lower()
+    traits = world["races"].get(race_key, {}).get("traits", [])
+
     # Standard D&D Skill Map
     skill_mods = {
         "Athletics": (s_str-10)//2, "Acrobatics": (s_dex-10)//2, "Stealth": (s_dex-10)//2,
@@ -1067,9 +1070,6 @@ async def take_turn(req: TurnRequest):
     new_turn = turn_number + 1
     update_session(req.session_id, hp=hp, max_hp=max_hp, mana=mana, gold=gold, alignment=alignment, level=level, xp=xp, xp_to_next_level=xp_to_next_level, turn_number=new_turn, location=location_key, x=x, y=y, npc_image=npc_image, available_stat_points=stat_pts, available_skill_points=skill_pts)
     append_journal(f"**Player:** {req.player_input}\n**DM:** {narration}", turn_number)
-
-    race_key = race.lower()
-    traits = world["races"].get(race_key, {}).get("traits", [])
 
     return TurnResponse(
         narration=narration, roll_result=roll_result, journal_entry="",
