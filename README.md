@@ -53,8 +53,8 @@ Full support for a growing Spellbook, including utility magic like:
 3.  Open your browser at `http://localhost:8080`.
 
 ## 📜 Credits & License
-*   **Lead Architect:** Gemini CLI
-*   **Implementation:** Claude Code & Jamie
+*   **Lead Architect:** jamie dannunzio
+*   **Implementation:** Jamie dannunzio
 *   **Ruleset:** Open-D20 (D&D 5e SRD 5.1 compliant)
 *   **License:** Creative Commons Attribution 4.0 International (CC-BY-4.0)
 
