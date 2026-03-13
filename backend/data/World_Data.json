@@ -1,0 +1,108 @@
+{
+  "initial_hook": "You stand before 'The Whispering Tankard,' a weathered tavern at the edge of the Wildwood. Smoke curls from the chimney, and the smell of roasting meat and stale ale wafts through the door.",
+  "locations": {
+    "tavern": {
+      "name": "The Whispering Tankard Tavern",
+      "description": "A smoky, dimly lit tavern. Barnaby the Barkeep stands behind the counter.",
+      "npc": {
+        "name": "Barnaby",
+        "title": "the Barkeep",
+        "description": "A burly man with a scarred apron and a friendly but watchful eye.",
+        "inventory": [
+          {"name": "Dwarven Stout", "price": 15, "description": "Restores 5 HP but gives -1 Perception for 2 turns."}
+        ],
+        "can_join": true,
+        "criteria": {"min_alignment": 10, "required_flag": "barnaby_talked"},
+        "archetype": "warrior", "hp": 25,
+        "secret": "Barnaby respects a person who pays their tab and speaks plainly."
+      }
+    },
+    "forest_clearing": {
+      "name": "Sun-Dappled Grove",
+      "description": "A peaceful clearing where the light filters through the leaves in golden shafts.",
+      "npc": {
+        "name": "Silas",
+        "title": "the Exiled Knight",
+        "personality": "stoic, honorable, weary",
+        "can_join": true,
+        "criteria": {"min_alignment": 40},
+        "archetype": "warrior", "hp": 35,
+        "description": "A man in polished but dented plate armor resting by a stream."
+      },
+      "animal": {
+        "name": "Stray Hound",
+        "can_join": true,
+        "criteria": {"skill_check": "Animal Handling", "dc": 12, "item_required": "Stale Bread"},
+        "archetype": "beast", "hp": 12,
+        "description": "A thin, rib-exposed dog watching you hopefully."
+      }
+    },
+    "swamp_outskirts": {
+      "name": "The Murky Bend",
+      "description": "Where the forest meets the rot of the swamp.",
+      "npc": {
+        "name": "Vex",
+        "title": "the Cutpurse",
+        "can_join": true,
+        "criteria": {"max_alignment": -10},
+        "archetype": "rogue", "hp": 20,
+        "description": "A hooded figure sharpening a blade on a whetstone. She looks like she's looking for trouble."
+      }
+    }
+  },
+  "archetypes": {
+    "warrior": { 
+      "display_name": "Warrior", "hp": 30, "max_hp": 30, "attack_modifier": 3, "mana": 0, "max_mana": 0, 
+      "stats": {"str": 15, "con": 14, "dex": 13, "wis": 12, "int": 10, "cha": 8},
+      "profs": ["Athletics", "Intimidation", "Survival"],
+      "skills": {"Strength": 3, "Animal Handling": 0} 
+    },
+    "mage": { 
+      "display_name": "Mage", "hp": 18, "max_hp": 18, "attack_modifier": 1, "mana": 20, "max_mana": 20, 
+      "stats": {"int": 15, "con": 14, "dex": 13, "wis": 12, "cha": 10, "str": 8},
+      "profs": ["Arcana", "History", "Insight"],
+      "skills": {"Strength": -1, "Animal Handling": 1},
+      "starting_spells": ["Fire Bolt", "Mage Hand", "Magic Missile"]
+    },
+    "rogue": { 
+      "display_name": "Rogue", "hp": 22, "max_hp": 22, "attack_modifier": 2, "mana": 0, "max_mana": 0, 
+      "stats": {"dex": 15, "con": 14, "wis": 13, "int": 12, "cha": 10, "str": 8},
+      "profs": ["Stealth", "Acrobatics", "Deception"],
+      "skills": {"Strength": 0, "Animal Handling": 2} 
+    }
+  },
+  "races": {
+    "human": { 
+      "display_name": "Human", 
+      "bonuses": {"str": 1, "dex": 1, "con": 1, "int": 1, "wis": 1, "cha": 1, "speed": 0},
+      "traits": ["Versatile: +1 to all ability scores."]
+    },
+    "elf": { 
+      "display_name": "Elf", 
+      "bonuses": {"dex": 2, "wis": 1, "perception": 2, "speed": 5},
+      "traits": ["Darkvision: See in the dark.", "Keen Senses: Proficiency in Perception.", "Fey Ancestry: Resistance to being charmed."]
+    },
+    "dwarf": { 
+      "display_name": "Dwarf", 
+      "bonuses": {"con": 2, "str": 1, "hp": 5},
+      "traits": ["Darkvision: See in the dark.", "Dwarven Resilience: Resistance to poison.", "Stonecunning: Advantage on History checks related to stonework."]
+    },
+    "halfling": { 
+      "display_name": "Halfling", 
+      "bonuses": {"dex": 2, "cha": 1, "speed": -5},
+      "traits": ["Lucky: Reroll natural 1s on attack rolls/saves.", "Brave: Advantage on saves against being frightened.", "Nimble: Can move through the space of larger creatures."]
+    }
+  },
+  "spells": {
+    "Fire Bolt": {"level": 0, "type": "Attack", "damage": "1d10 Fire", "description": "Hurl a mote of fire at a creature."},
+    "Mage Hand": {"level": 0, "type": "Utility", "description": "A spectral, floating hand appears at a point you choose within range."},
+    "Prestidigitation": {"level": 0, "type": "Utility", "description": "Perform minor magical tricks for 1 hour."},
+    "Magic Missile": {"level": 1, "mana": 5, "type": "Attack", "damage": "3d4+3 Force", "description": "Three glowing darts of magical force hit unerringly."},
+    "Cure Wounds": {"level": 1, "mana": 5, "type": "Heal", "amount": "1d8+3", "description": "A creature you touch regains hit points."},
+    "Shield": {"level": 1, "mana": 5, "type": "Defense", "description": "An invisible barrier of magical force appears and protects you (+5 AC)."},
+    "Detect Magic": {"level": 1, "mana": 5, "type": "Utility", "description": "Senses the presence of magic within 30 feet."},
+    "Sleep": {"level": 1, "mana": 5, "type": "Control", "description": "This spell sends creatures into a magical slumber."},
+    "Far Sight": {"level": 2, "mana": 10, "type": "Utility", "description": "Gaze into the distance, revealing distant locations on your map."},
+    "Feather Fall": {"level": 1, "mana": 5, "type": "Utility", "description": "Slow your rate of descent, preventing fall damage."}
+  }
+}

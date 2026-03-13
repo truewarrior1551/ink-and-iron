@@ -1,0 +1,33 @@
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "8001:8001"
+    volumes:
+      - db-data:/app/data
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - DB_PATH=/app/data/gamie.db
+    networks:
+      - default
+      - ai
+    restart: unless-stopped
+
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend/index.html:/usr/share/nginx/html/index.html:ro
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  db-data:
+
+networks:
+  default: {}
+  ai:
+    external: true

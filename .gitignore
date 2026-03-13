@@ -1,0 +1,15 @@
+# Python
+backend/venv/
+backend/__pycache__/
+__pycache__/
+*.pyc
+
+# Database
+*.db
+backend/data/gamie.db
+
+# Runtime files
+Journal.md
+
+# Backups
+*.bak

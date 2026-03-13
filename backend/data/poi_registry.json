@@ -1,0 +1,52 @@
+{
+  "points_of_interest": {
+    "Woodland": [
+      {"name": "The Weeping Willow", "description": "A massive tree whose silver leaves hum with a faint, mournful melody."},
+      {"name": "Hunter's Pitfall", "description": "A camouflaged hole in the ground. Someone was trapping more than just rabbits here."},
+      {"name": "The Shattered Carriage", "description": "A noble's transport, overturned and picked clean, except for a single locked box."},
+      {"name": "Gallows Hill", "description": "Three empty nooses sway in the breeze. The grass here is burnt black."},
+      {"name": "The Druid's Circle", "description": "Twelve mossy stones arranged in a perfect circle. The air feels heavy with static."},
+      {"name": "Bandit's Lookout", "description": "A tall pine with iron spikes driven into the trunk like a ladder."},
+      {"name": "The Honey-Bear's Den", "description": "Smells sweet, but the bones outside suggest the owner isn't sharing."},
+      {"name": "Fairy Ring", "description": "A circle of glowing blue mushrooms. Step inside at your own risk."},
+      {"name": "The Hermit's Grave", "description": "A simple wooden cross. Fresh flowers are laid here every morning."},
+      {"name": "Statue of the Forgotten King", "description": "A moss-covered stone titan holding a broken sword."}
+    ],
+    "Swamp": [
+      {"name": "The Bog-Witch's Cauldron", "description": "An iron pot bubbling over a fire that never goes out."},
+      {"name": "Sinking Spires", "description": "The tops of a buried cathedral poking through the mud."},
+      {"name": "The Leech-Pool", "description": "The water is black and moves even when there's no wind."},
+      {"name": "Will-o'-the-Wisp Lantern", "description": "A rusted cage hanging from a dead branch, glowing with cold fire."},
+      {"name": "The Corpse-Flower Patch", "description": "Huge, red blooms that smell of rotting meat."},
+      {"name": "Old Pete's Ferry", "description": "A half-sunken raft tied to a rotting pier."},
+      {"name": "The Whispering Reeds", "description": "If you stand still, the wind through the grass sounds like voices."},
+      {"name": "Sunken Statues", "description": "Faces of stone staring up from beneath the murky water."},
+      {"name": "The Alchemist's Wreck", "description": "A rowboat filled with cracked glass vials and purple stains."},
+      {"name": "Bog-Iron Vein", "description": "Reddish mud where the earth itself seems to be bleeding."}
+    ],
+    "Mountain": [
+      {"name": "The Eagle's Eyrie", "description": "A precarious ledge with a view that stretches to the coast."},
+      {"name": "The Frozen Miner", "description": "A man turned to ice, still clutching a pickaxe made of silver."},
+      {"name": "Wyvern's Perch", "description": "A scorched rock smelling of sulfur and old meat."},
+      {"name": "The Echoing Chasm", "description": "A crack in the world. If you drop a stone, you never hear it hit."},
+      {"name": "Star-Touch Peak", "description": "The highest point, where the air is thin and the stars feel close."},
+      {"name": "The Ancient Aqueduct", "description": "Stone arches bridging two peaks, still carrying crystal-clear water."},
+      {"name": "Hermit's Cave", "description": "Hidden behind a waterfall of melting ice."},
+      {"name": "The Giant's Staircase", "description": "Steps carved into the cliffside, each five feet high."},
+      {"name": "Obsidian Outcrop", "description": "Volcanic glass that glitters like a black diamond."},
+      {"name": "The Wind-Whistle Hole", "description": "A natural tunnel that screams when the gale blows."}
+    ],
+    "Path": [
+      {"name": "The Traveler's Rest", "description": "A stone bench with a carved map of the region."},
+      {"name": "Broken Milestone", "description": "The distance to 'Safety' has been scratched out."},
+      {"name": "The Wayside Shrine", "description": "A small altar to the God of Roads. Travelers leave copper coins here."},
+      {"name": "Toll-Gate Ruins", "description": "The rusted gate is locked, but the wall is long gone."},
+      {"name": "The Old Well", "description": "The bucket is gone, but something glitters at the bottom."},
+      {"name": "Abandoned Watchtower", "description": "The roof has collapsed, but the basement door is still bolted."},
+      {"name": "The Merchant's Grave", "description": "A pile of stones and a broken wagon wheel."},
+      {"name": "Hanging Signboard", "description": "It used to say 'Welcome', but now it's just a blank piece of wood."},
+      {"name": "The Crossroads Oak", "description": "Hundreds of ribbons are tied to its lower branches."},
+      {"name": "Crumbling Bridge", "description": "Spans a dry creek bed. The stonework is ancient dwarf-craft."}
+    ]
+  }
+}

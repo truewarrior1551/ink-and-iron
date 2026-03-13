@@ -1,0 +1,37 @@
+{
+  "tiers": {
+    "1": {
+      "gold_range": [5, 20],
+      "items": [
+        {"name": "Rusty Dagger", "description": "1d4 damage.", "value": 10, "is_weapon": true, "die": 4},
+        {"name": "Whetstone", "description": "Repair kit: restores 25 durability.", "value": 15},
+        {"name": "Iron Scraps", "description": "Basic crafting material.", "value": 5, "is_material": true},
+        {"name": "Stale Bread", "description": "Heals 2 HP.", "value": 2}
+      ]
+    },
+    "2": {
+      "gold_range": [50, 150],
+      "items": [
+        {"name": "Steel Shortsword", "description": "1d6 damage.", "value": 100, "is_weapon": true, "die": 6},
+        {"name": "Iron Ore", "description": "Sturdy crafting material.", "value": 20, "is_material": true},
+        {"name": "Thick Leather", "description": "Tough material for armor/grips.", "value": 20, "is_material": true},
+        {"name": "Minor Health Potion", "description": "Heals 10 HP.", "value": 50}
+      ]
+    },
+    "3": {
+      "gold_range": [500, 1000],
+      "items": [
+        {"name": "Ancient Scrap", "description": "Mysterious metal from a lost age.", "value": 150, "is_material": true},
+        {"name": "Arcane Dust", "description": "Glowing dust used for magical forging.", "value": 200, "is_material": true},
+        {"name": "Dragon Scale", "description": "Legendary crafting material.", "value": 1000, "is_material": true}
+      ]
+    },
+    "4": {
+      "gold_range": [2000, 5000],
+      "is_legendary": true,
+      "items": [
+        {"name": "The Aggressive Spoon", "description": "2d10 damage.", "value": 10000, "is_weapon": true, "die": 10, "dice_count": 2}
+      ]
+    }
+  }
+}

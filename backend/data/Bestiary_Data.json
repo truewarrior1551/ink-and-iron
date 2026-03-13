@@ -1,0 +1,214 @@
+{
+  "monsters": [
+    {
+      "name": "Rat",
+      "cr": 0,
+      "base_hp": 1,
+      "base_ac": 10,
+      "base_atk": 0,
+      "damage_dice": "1d1",
+      "terrains": ["Tavern", "Path", "Woodland", "Swamp"],
+      "description": "A dirty, small rodent with sharp teeth."
+    },
+    {
+      "name": "Goblin",
+      "cr": 0.25,
+      "base_hp": 7,
+      "base_ac": 15,
+      "base_atk": 4,
+      "damage_dice": "1d6+2",
+      "terrains": ["Path", "Woodland", "Swamp", "Mountain"],
+      "description": "A small, black-hearted humanoid that skulk in the shadows."
+    },
+    {
+      "name": "Skeleton",
+      "cr": 0.25,
+      "base_hp": 13,
+      "base_ac": 13,
+      "base_atk": 4,
+      "damage_dice": "1d6+2",
+      "terrains": ["Path", "Mountain", "Swamp"],
+      "description": "Animated bones held together by dark magic."
+    },
+    {
+      "name": "Zombie",
+      "cr": 0.25,
+      "base_hp": 22,
+      "base_ac": 8,
+      "base_atk": 3,
+      "damage_dice": "1d6+1",
+      "terrains": ["Swamp", "Woodland"],
+      "description": "A shambling corpse driven by a hunger for flesh."
+    },
+    {
+      "name": "Orc",
+      "cr": 0.5,
+      "base_hp": 15,
+      "base_ac": 13,
+      "base_atk": 5,
+      "damage_dice": "1d12+3",
+      "terrains": ["Mountain", "Woodland"],
+      "description": "A savage humanoid with gray skin and prominent tusks."
+    },
+    {
+      "name": "Dire Wolf",
+      "cr": 1,
+      "base_hp": 37,
+      "base_ac": 14,
+      "base_atk": 5,
+      "damage_dice": "2d6+3",
+      "terrains": ["Woodland", "Mountain"],
+      "description": "An oversized, aggressive wolf with a keen sense of smell."
+    },
+    {
+      "name": "Bugbear",
+      "cr": 1,
+      "base_hp": 27,
+      "base_ac": 16,
+      "base_atk": 4,
+      "damage_dice": "2d8+2",
+      "terrains": ["Woodland", "Mountain"],
+      "description": "A hairy, muscular goblinoid built for stealthy ambushes."
+    },
+    {
+      "name": "Ghoul",
+      "cr": 1,
+      "base_hp": 22,
+      "base_ac": 12,
+      "base_atk": 2,
+      "damage_dice": "2d4+2",
+      "terrains": ["Swamp", "Mountain"],
+      "description": "An undead creature that haunts graveyards and battlefields."
+    },
+    {
+      "name": "Ogre",
+      "cr": 2,
+      "base_hp": 59,
+      "base_ac": 11,
+      "base_atk": 6,
+      "damage_dice": "2d8+4",
+      "terrains": ["Mountain", "Swamp", "Woodland"],
+      "description": "A giant, dim-witted humanoid of legendary strength and temper."
+    },
+    {
+      "name": "Gargoyle",
+      "cr": 2,
+      "base_hp": 52,
+      "base_ac": 15,
+      "base_atk": 4,
+      "damage_dice": "1d6+2",
+      "terrains": ["Mountain"],
+      "description": "A stone-like elemental that resembles a grotesque winged statue."
+    },
+    {
+      "name": "Owlbear",
+      "cr": 3,
+      "base_hp": 59,
+      "base_ac": 13,
+      "base_atk": 7,
+      "damage_dice": "1d10+5",
+      "terrains": ["Woodland", "Mountain"],
+      "description": "A ferocious cross between a giant owl and a bear."
+    },
+    {
+      "name": "Manticore",
+      "cr": 3,
+      "base_hp": 68,
+      "base_ac": 14,
+      "base_atk": 5,
+      "damage_dice": "1d8+3",
+      "terrains": ["Mountain", "Woodland"],
+      "description": "A monstrosity with the face of a man, body of a lion, and wings of a dragon."
+    },
+    {
+      "name": "Ghost",
+      "cr": 4,
+      "base_hp": 45,
+      "base_ac": 11,
+      "base_atk": 5,
+      "damage_dice": "4d6+3",
+      "terrains": ["Swamp", "Mountain"],
+      "description": "A soul bound to the world of the living by unfinished business."
+    },
+    {
+      "name": "Ettin",
+      "cr": 4,
+      "base_hp": 85,
+      "base_ac": 12,
+      "base_atk": 7,
+      "damage_dice": "2d8+5",
+      "terrains": ["Mountain", "Woodland"],
+      "description": "A two-headed giant with a foul disposition."
+    },
+    {
+      "name": "Troll",
+      "cr": 5,
+      "base_hp": 84,
+      "base_ac": 15,
+      "base_atk": 7,
+      "damage_dice": "2d6+4",
+      "terrains": ["Swamp", "Mountain", "Woodland"],
+      "description": "A fearsome giant that regenerates from even the most grievous wounds."
+    },
+    {
+      "name": "Hill Giant",
+      "cr": 5,
+      "base_hp": 105,
+      "base_ac": 13,
+      "base_atk": 8,
+      "damage_dice": "3d8+5",
+      "terrains": ["Mountain", "Woodland"],
+      "description": "A massive, gluttonous giant that wanders the hills in search of food."
+    },
+    {
+      "name": "Wyvern",
+      "cr": 6,
+      "base_hp": 110,
+      "base_ac": 13,
+      "base_atk": 7,
+      "damage_dice": "2d6+4",
+      "terrains": ["Mountain"],
+      "description": "A distant cousin to dragons with a venomous stinger on its tail."
+    },
+    {
+      "name": "Chimera",
+      "cr": 6,
+      "base_hp": 114,
+      "base_ac": 14,
+      "base_atk": 7,
+      "damage_dice": "2d6+4",
+      "terrains": ["Mountain"],
+      "description": "A multi-headed monstrosity with the heads of a lion, goat, and dragon."
+    },
+    {
+      "name": "Hydra",
+      "cr": 8,
+      "base_hp": 172,
+      "base_ac": 15,
+      "base_atk": 8,
+      "damage_dice": "1d10+5",
+      "terrains": ["Swamp", "Water"],
+      "description": "A massive reptilian creature with multiple heads that grow back when cut."
+    },
+    {
+      "name": "Young Blue Dragon",
+      "cr": 9,
+      "base_hp": 152,
+      "base_ac": 18,
+      "base_atk": 9,
+      "damage_dice": "2d10+5",
+      "terrains": ["Mountain", "Path"],
+      "description": "A vain and territorial dragon that breathes bolts of lightning."
+    },
+    {
+      "name": "Aboleth",
+      "cr": 10,
+      "base_hp": 135,
+      "base_ac": 17,
+      "base_atk": 9,
+      "damage_dice": "2d6+5",
+      "terrains": ["Water", "Swamp"],
+      "description": "An ancient, telepathic aberration that dwells in the deepest waters."
+    }
+  ]
+}
