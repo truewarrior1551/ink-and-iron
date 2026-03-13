@@ -809,12 +809,18 @@ async def take_turn(req: TurnRequest):
     )
     # Add specific D&D context to prompt
     dnd_context = f"\nPLAYER D&D STATS: STR:{s_str}, DEX:{s_dex}, CON:{s_con}, INT:{s_int}, WIS:{s_wis}, CHA:{s_cha}\nPROFICIENCIES: {', '.join(profs)}\nSPELLBOOK: {', '.join([s['spell_name'] for s in spellbook])}"
+    active_spells = []
+    if vision_radius > 2: active_spells.append("Far Sight (Active)")
+    if int(get_flag(req.session_id, "feather_fall_active") or "0") > 0: active_spells.append("Feather Fall (Active)")
+    if active_spells: dnd_context += f"\nACTIVE SPELL EFFECTS: {', '.join(active_spells)}"
+    
     system_prompt += dnd_context
 
     narration = await call_ollama(system_prompt, req.player_input)
     narration = re.sub(r"^(Dungeon Master|DM):\s*", "", narration, flags=re.IGNORECASE)
     narration = re.sub(r"^\*\*DM:\*\*\s*", "", narration, flags=re.IGNORECASE)
 
+    roll_result = None
     roll_requests = parse_roll_requests(narration)
     if roll_requests:
         skill_name = roll_requests[0]
