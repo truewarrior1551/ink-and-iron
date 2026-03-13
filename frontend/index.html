@@ -544,6 +544,9 @@
         <button class="btn-quick" onclick="processQuickAction('Open my bag and check items')">🎒 Bag</button>
         <button class="btn-quick" onclick="processQuickAction('Search for treasure or loot')">💎 Loot</button>
         <button class="btn-quick" onclick="processQuickAction('Talk to anyone nearby')">💬 Talk</button>
+        <button class="btn-quick" onclick="processQuickAction('Pick up items nearby')">📦 Pick Up</button>
+        <button class="btn-quick" onclick="processQuickAction('Examine this closely')">🔍 Examine</button>
+        <button class="btn-quick" onclick="freeRoll()">🎲 Roll</button>
       </div>
 
       <!-- Combat Actions -->
@@ -593,11 +596,16 @@
   <div id="dice-modal" class="modal-overlay glass">
     <div class="modal-box glass" style="max-width: 400px;">
       <h2 id="roll-skill-name" class="cinzel gold-text" style="font-size: 1.5rem; margin-bottom: 1rem;">Skill Check</h2>
-      <div id="dice-container" style="font-size: 5rem; margin: 2rem 0; transition: transform 0.5s;">🎲</div>
+      <canvas id="dice-canvas" width="120" height="120" style="margin: 1.5rem auto; display: block;"></canvas>
+      <div id="roll-result" style="font-size: 1.8rem; font-family: 'Cinzel', serif; color: var(--accent-gold); min-height: 2.5rem; margin-bottom: 0.5rem;"></div>
       <div id="roll-modifier" style="font-size: 1.2rem; margin-bottom: 2rem; opacity: 0.8;">Modifier: +0</div>
       <button id="btn-roll" class="btn-send" style="width: 100%; height: 60px; font-size: 1.2rem;" onclick="performRoll()">ROLL D20</button>
+      <button id="btn-dice-close" style="display:none; width: 100%; height: 40px; margin-top: 0.5rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-gold); color: var(--text-dim); border-radius: 4px; cursor: pointer; font-size: 0.8rem; text-transform: uppercase;" onclick="closeDiceModal()">Close</button>
     </div>
   </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" style="display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(20,10,5,0.95); border:1px solid var(--border-gold); color:var(--text-dim); padding:0.6rem 1.4rem; border-radius:6px; font-size:0.85rem; z-index:3000; pointer-events:none;"></div>
 
   <!-- Jester Overlay -->
   <div id="jester-overlay" style="position: fixed; bottom: 20px; right: 20px; max-width: 300px; z-index: 2000; pointer-events: none; display: none;">
@@ -612,19 +620,24 @@
       from { opacity: 0; transform: translateX(50px); }
       to { opacity: 1; transform: translateX(0); }
     }
-    .rolling { animation: shake 0.1s infinite; }
-    @keyframes shake {
-      0% { transform: translate(2px, 1px) rotate(0deg); }
-      20% { transform: translate(-3px, 0px) rotate(1deg); }
-      40% { transform: translate(1px, -1px) rotate(1deg); }
-      60% { transform: translate(-1px, 2px) rotate(0deg); }
-      80% { transform: translate(-1px, -1px) rotate(1deg); }
-      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    @keyframes dieSpin {
+      0%   { transform: scaleX(1); }
+      25%  { transform: scaleX(0.05); }
+      50%  { transform: scaleX(1); }
+      75%  { transform: scaleX(0.05); }
+      100% { transform: scaleX(1); }
+    }
+    @keyframes nat20flash {
+      0%   { box-shadow: 0 0 0 rgba(201,168,76,0); }
+      40%  { box-shadow: 0 0 40px rgba(201,168,76,0.8); }
+      100% { box-shadow: 0 0 0 rgba(201,168,76,0); }
     }
   </style>
 
   <script>
     const API = `http://${window.location.hostname}:8001`;
+    let _diceAnimFrame = null;
+    let _diceAnimPhase = 0;
     let state = {
       sessionId: null,
       inCombat: 0,
@@ -633,7 +646,8 @@
       races: {},
       world: {},
       selectedArchetype: null,
-      currentArchetype: null
+      currentArchetype: null,
+      freeRoll: false
     };
 
     marked.setOptions({ breaks: true, gfm: true });
@@ -862,6 +876,7 @@
         }
         updateBar('xp', sess.xp || 0, sess.xp_to_next_level || 100);
 
+        state.turnNumber = sess.turn_number || 1;
         document.getElementById('gold-display').textContent = sess.gold || 0;
         document.getElementById('turn-display').textContent = sess.turn_number || 1;
         document.getElementById('location-name').textContent = sess.location_name || 'Unknown';
@@ -898,8 +913,11 @@
         // Spellbook
         const spellList = document.getElementById('spell-list');
         if (spellList && sess.spellbook) {
-          spellList.innerHTML = sess.spellbook.length 
-            ? sess.spellbook.map(s => `<div class="gold-text" style="border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0.1rem 0;" title="${s.description}">✨ ${s.spell_name} <span style="opacity:0.6; font-size:0.5rem">(Lvl ${s.level})</span></div>`).join('')
+          spellList.innerHTML = sess.spellbook.length
+            ? sess.spellbook.map(s => {
+                const manaCost = state.world?.spells?.[s.spell_name]?.mana ?? '?';
+                return `<div class="gold-text" style="display:flex; justify-content:space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 0.1rem 0;" title="${s.description}">✨ ${s.spell_name} <span style="color:#4ab3e8; font-size:0.5rem">${manaCost}💧</span><span style="opacity:0.6; font-size:0.5rem">Lv ${s.level}</span></div>`;
+              }).join('')
             : '<div style="opacity:0.5; font-style:italic">No spells</div>';
         }
 
@@ -955,7 +973,7 @@
         if (sess.pending_roll) {
           showDiceModal(sess.pending_roll);
         } else {
-          document.getElementById('dice-modal').classList.remove('active');
+          closeDiceModal();
         }
 
         // 🤝 Interaction Panel (Hiring)
@@ -984,40 +1002,123 @@
       }
     }
 
+    function drawDie(ctx, displayVal, spinning) {
+      const W = 120, R = 16;
+      ctx.clearRect(0, 0, W, W);
+      const scaleX = spinning ? Math.abs(Math.cos(_diceAnimPhase * 4)) * 0.9 + 0.1 : 1;
+      ctx.save();
+      ctx.translate(W / 2, W / 2);
+      ctx.scale(scaleX, 1);
+      ctx.translate(-W / 2, -W / 2);
+      ctx.beginPath();
+      ctx.roundRect(10, 10, W - 20, W - 20, R);
+      ctx.fillStyle = '#1a1408';
+      ctx.fill();
+      ctx.strokeStyle = spinning ? 'rgba(201,168,76,0.6)' : '#c9a84c';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.roundRect(14, 14, W - 28, W - 28, R - 4);
+      ctx.strokeStyle = 'rgba(201,168,76,0.15)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      ctx.fillStyle = spinning ? 'rgba(255,255,255,0.5)' : '#ffffff';
+      ctx.font = `bold ${displayVal > 9 ? '2.2rem' : '2.8rem'} Cinzel, serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(displayVal), W / 2, W / 2);
+      ctx.restore();
+    }
+
+    function _startDiceSpin() {
+      if (_diceAnimFrame) { cancelAnimationFrame(_diceAnimFrame); _diceAnimFrame = null; }
+      _diceAnimPhase = 0;
+      const canvas = document.getElementById('dice-canvas');
+      const ctx = canvas.getContext('2d');
+      function spin() {
+        _diceAnimPhase += 0.08;
+        const cycling = Math.floor((_diceAnimPhase * 3) % 20) + 1;
+        drawDie(ctx, cycling, true);
+        _diceAnimFrame = requestAnimationFrame(spin);
+      }
+      spin();
+    }
+
     function showDiceModal(roll) {
       state.pending_roll = roll;
+      state.freeRoll = false;
       document.getElementById('roll-skill-name').textContent = `${roll.skill} Check`;
       document.getElementById('roll-modifier').textContent = `Modifier: ${roll.modifier >= 0 ? '+' : ''}${roll.modifier}`;
-      document.getElementById('dice-modal').classList.add('active');
-      document.getElementById('dice-container').textContent = '🎲';
+      document.getElementById('roll-result').textContent = '';
       document.getElementById('btn-roll').disabled = false;
       document.getElementById('btn-roll').textContent = 'ROLL D20';
+      document.getElementById('btn-roll').style.display = '';
+      document.getElementById('btn-dice-close').style.display = 'none';
+      document.getElementById('dice-modal').classList.add('active');
+      _startDiceSpin();
+    }
+
+    function freeRoll() {
+      state.freeRoll = true;
+      state.pending_roll = { skill: 'Free', modifier: 0 };
+      document.getElementById('roll-skill-name').textContent = 'D20 Roll';
+      document.getElementById('roll-modifier').textContent = '';
+      document.getElementById('roll-result').textContent = '';
+      document.getElementById('btn-roll').disabled = false;
+      document.getElementById('btn-roll').textContent = 'ROLL D20';
+      document.getElementById('btn-roll').style.display = '';
+      document.getElementById('btn-dice-close').style.display = 'none';
+      document.getElementById('dice-modal').classList.add('active');
+      _startDiceSpin();
+    }
+
+    function closeDiceModal() {
+      if (_diceAnimFrame) { cancelAnimationFrame(_diceAnimFrame); _diceAnimFrame = null; }
+      document.getElementById('dice-modal').classList.remove('active');
     }
 
     async function performRoll() {
       const btn = document.getElementById('btn-roll');
-      const die = document.getElementById('dice-container');
       btn.disabled = true;
-      die.classList.add('rolling');
-      
-      // Dramatic pause
+
+      // Let spin run for 1 second
       await new Promise(r => setTimeout(r, 1000));
-      
+
+      // Stop spin, draw final result
+      if (_diceAnimFrame) { cancelAnimationFrame(_diceAnimFrame); _diceAnimFrame = null; }
       const roll = Math.floor(Math.random() * 20) + 1;
-      die.classList.remove('rolling');
-      die.textContent = roll;
-      btn.textContent = `Result: ${roll + state.pending_roll.modifier}`;
-      
-      await new Promise(r => setTimeout(r, 800));
-      
-      // Submit result to backend
+      const canvas = document.getElementById('dice-canvas');
+      const ctx = canvas.getContext('2d');
+      drawDie(ctx, roll, false);
+
+      if (roll === 20) {
+        document.getElementById('dice-modal').querySelector('.modal-box').style.animation = 'nat20flash 0.6s ease-out';
+        setTimeout(() => document.getElementById('dice-modal').querySelector('.modal-box').style.animation = '', 700);
+      }
+      if (roll === 1) document.getElementById('roll-result').style.color = '#c05050';
+      else document.getElementById('roll-result').style.color = '';
+
+      const total = roll + state.pending_roll.modifier;
+      document.getElementById('roll-result').textContent = state.freeRoll
+        ? `Rolled: ${roll}`
+        : `Total: ${total}`;
+
+      await new Promise(r => setTimeout(r, 600));
+
+      if (state.freeRoll) {
+        btn.style.display = 'none';
+        document.getElementById('btn-dice-close').style.display = '';
+        return;
+      }
+
+      btn.textContent = `Result: ${total}`;
       try {
         const resp = await fetch(`${API}/session/roll`, {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
             session_id: state.sessionId,
-            roll_total: roll + state.pending_roll.modifier,
+            roll_total: total,
             skill: state.pending_roll.skill,
             modifier: state.pending_roll.modifier
           })
@@ -1027,7 +1128,7 @@
         updateGameState(data);
         refreshJournal();
       } catch (err) {
-        alert("Roll submission failed.");
+        showToast("Roll submission failed.");
         btn.disabled = false;
       }
     }
@@ -1038,6 +1139,13 @@
       text.textContent = msg;
       overlay.style.display = 'block';
       setTimeout(() => { overlay.style.display = 'none'; }, 6000);
+    }
+
+    function showToast(msg, duration = 3000) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      setTimeout(() => { t.style.display = 'none'; }, duration);
     }
 
     async function doHire() {
@@ -1383,7 +1491,7 @@ if (sess.npc_image) {
         addMessage('dm', data.narration);
         updateGameState(data);
         refreshJournal();
-      } catch (err) { removeTyping(); } finally { state.processing = false; }
+      } catch (err) { removeTyping(); showToast("The DM is unreachable — try again."); } finally { state.processing = false; }
     }
 
     function processQuickAction(text) { sendTurn(text); }
@@ -1401,9 +1509,31 @@ if (sess.npc_image) {
         const data = await resp.json();
         removeTyping();
         addMessage('dm', data.narration);
+        if (data.combat_round) {
+          const cr = data.combat_round;
+          const fled = cr.fled;
+          let html = `<div style="margin-top:0.5rem; padding:0.5rem 0.8rem; border-left:3px solid var(--accent-gold); font-size:0.82rem; color:var(--text-dim); line-height:1.8;">`;
+          if (fled) {
+            html += cr.flee_success ? `⚡ You fled successfully.` : `❌ Flee failed — you stay.`;
+          } else {
+            if (cr.player_hit) html += `⚔️ You hit for <b style="color:#e0c060">${cr.player_damage}</b> dmg (roll: ${cr.player_roll})<br>`;
+            else html += `⚔️ Your attack missed (roll: ${cr.player_roll})<br>`;
+            if (cr.enemy_hit) html += `🩸 Enemy hits you for <b style="color:#c05050">${cr.enemy_damage}</b> dmg (roll: ${cr.enemy_roll})`;
+            else html += `🛡️ Enemy missed you (roll: ${cr.enemy_roll})`;
+            if (cr.companion_actions && cr.companion_actions.length) {
+              html += `<br>🤝 Companions: ${cr.companion_actions.map(c => c.description || c).join(', ')}`;
+            }
+          }
+          html += `</div>`;
+          const wrapper = document.createElement('div');
+          wrapper.className = 'msg-dm';
+          wrapper.innerHTML = html;
+          document.getElementById('chat-scroll').appendChild(wrapper);
+          document.getElementById('chat-scroll').scrollTop = 99999;
+        }
         updateGameState(data);
         refreshJournal();
-      } catch (err) { removeTyping(); } finally { state.processing = false; }
+      } catch (err) { removeTyping(); showToast("Combat action failed."); } finally { state.processing = false; }
     }
 
     async function refreshJournal() {
@@ -1428,7 +1558,24 @@ if (sess.npc_image) {
 
     document.getElementById('btn-send').onclick = () => sendTurn();
     document.getElementById('player-textarea').onkeydown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendTurn(); } };
-    document.getElementById('btn-undo').onclick = async () => { window.location.reload(); };
+    document.getElementById('btn-undo').onclick = async () => {
+      if (state.turnNumber <= 1) { showToast("Nothing to undo."); return; }
+      if (!confirm("Undo last turn? (The Chrono-Jester will have words...)")) return;
+      try {
+        const resp = await fetch(`${API}/session/undo`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ session_id: state.sessionId, target_turn: state.turnNumber - 1 })
+        });
+        const data = await resp.json();
+        updateGameState(data);
+        refreshJournal();
+        if (data.jester_msg) showJester(data.jester_msg);
+        addMessage('dm', `*[Turn undone — restored to turn ${state.turnNumber}]*`);
+      } catch (err) {
+        showToast("Undo failed — the timeline resists.");
+      }
+    };
 
     init();
   </script>
