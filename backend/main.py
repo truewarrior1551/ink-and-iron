@@ -401,6 +401,7 @@ class SessionResponse(BaseModel):
     enemy_hp: int = 0
     enemy_max_hp: int = 0
     npc_image: str = ""
+    flags: dict = {}
 
 
 class TurnRequest(BaseModel):
@@ -462,6 +463,7 @@ class TurnResponse(BaseModel):
     npc_image: str = ""
     race: str = "Human"
     character_name: str = "Adventurer"
+    flags: dict = {}
 
 
 class RollSubmissionRequest(BaseModel):
@@ -638,6 +640,7 @@ async def new_session(req: NewSessionRequest):
         inventory=[], quests=get_quests(session_id),
         x=0, y=0, surroundings=get_surroundings(session_id, 0, 0, radius=2),
         in_combat=0,
+        flags=get_all_flags(session_id),
     )
 
 
@@ -694,6 +697,7 @@ async def resume_session(session_id: str):
         enemy_name=session.get("enemy_name", ""),
         enemy_hp=session.get("enemy_hp", 0),
         enemy_max_hp=session.get("enemy_max_hp", 0),
+        flags=get_all_flags(session_id),
     )
 
 
@@ -853,7 +857,8 @@ async def take_turn(req: TurnRequest):
             enemy_hp=session.get("enemy_hp", 0),
             enemy_max_hp=session.get("enemy_max_hp", 0),
             npc_image=npc_image, race=race,
-            character_name=session.get("character_name", "Adventurer")
+            character_name=session.get("character_name", "Adventurer"),
+            flags=get_all_flags(req.session_id),
         )
 
     tags = parse_stat_tags(narration)
@@ -1091,7 +1096,8 @@ async def take_turn(req: TurnRequest):
         enemy_max_hp=get_session(req.session_id).get("enemy_max_hp", 0),
         npc_image=npc_image,
         race=race,
-        character_name=session.get("character_name", "Adventurer")
+        character_name=session.get("character_name", "Adventurer"),
+        flags=get_all_flags(req.session_id),
     )
 
 
@@ -1217,7 +1223,8 @@ async def submit_roll(req: RollSubmissionRequest):
         enemy_hp=session.get("enemy_hp", 0),
         enemy_max_hp=session.get("enemy_max_hp", 0),
         npc_image=session.get("npc_image", ""), race=race,
-        character_name=session.get("character_name", "Adventurer")
+        character_name=session.get("character_name", "Adventurer"),
+        flags=get_all_flags(req.session_id),
     )
 
 def race_data_traits(world, race):
@@ -1271,6 +1278,7 @@ async def undo_turn(req: UndoRequest):
         quests=get_quests(req.session_id), companions=get_active_companions(req.session_id),
         x=s["x"], y=s["y"], surroundings=get_surroundings(req.session_id, s["x"], s["y"], radius=2),
         in_combat=s["in_combat"], enemy_name=s["enemy_name"], enemy_hp=s["enemy_hp"], enemy_max_hp=s["enemy_max_hp"],
+        flags=get_all_flags(req.session_id),
     )
 
 
